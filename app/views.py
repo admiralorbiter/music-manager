@@ -31,5 +31,32 @@ def index():
     else:
         # Display the upload form and table
         tracks = Track.query.all()
-        print(tracks)
         return render_template('index.html', tracks=tracks)
+
+@app.route('/cancel_edit/<track_id>')
+def cancel_edit(track_id):
+    track = Track.query.get_or_404(track_id)
+    if track.comment is None:
+        track.comment = ''
+    return track.comment, 200
+
+@app.route('/edit_comment/<track_id>')
+def edit_comment(track_id):
+    track = Track.query.get_or_404(track_id)
+    return f'''
+       <textarea id="new-comment-{track.id}" name="new-comment"></textarea>
+<button hx-post="/update_comment/{track.id}" hx-include="#new-comment-{track.id}" hx-target="#comment-{track.id}" hx-swap="outerHTML">Save</button>
+        <button hx-get="/cancel_edit/{track.id}" hx-target="#comment-{track.id}" hx-swap="innerHTML">Cancel</button>
+    '''
+
+@app.route('/update_comment/<track_id>', methods=['POST'])
+def update_comment(track_id):
+    print(request.form)
+    track = Track.query.get_or_404(track_id)
+    new_comment = request.form['new-comment']
+    if new_comment is None:
+        track.comment = None
+    else:
+      track.comment = new_comment
+    db.session.commit()
+    return track.comment

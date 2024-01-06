@@ -21,8 +21,8 @@
                         <th>Track Name</th>
                         <th>Artist</th>
                         <th>Album</th>
-                        <th>Duration (ms)</th>
-                        <th>Added At</th>
+                        <th>Popularity</th>
+                        <th>Comment</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,13 +31,17 @@
                         <td>{{ track.track_name }}</td>
                         <td>{{ track.artist_name }}</td>
                         <td>{{ track.album_name }}</td>
-                        <td>{{ track.track_duration_ms }}</td>
-                        <td>{{ track.added_at }}</td>
+                        <td>{{track.popularity}}</td>
+                        <td>
+                            <span id="comment-{{track.id}}">{{ track.comment }}</span>
+                            <button hx-get="/edit_comment/{{track.id}}" hx-target="#comment-{{track.id}}" hx-swap="innerHTML">Edit</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+    <script src="https://unpkg.com/htmx.org"></script>
 </body>
 </html>

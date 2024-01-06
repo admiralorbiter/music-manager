@@ -21,6 +21,7 @@ class Track(db.Model):
     isrc = db.Column(db.String(50))
     added_by = db.Column(db.String(100))
     added_at = db.Column(db.String(100))
+    comment = db.Column(db.String(500))
 
     def __repr__(self):
         return f"<Track {self.track_name} by {self.artist_name}>"
