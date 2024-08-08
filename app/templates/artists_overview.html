@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Music Manager{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+    <h1 class="display-1 title">Artists</h1>
+    <p>Discover new artists, dive deeper on artists you are already familiar with, and create playlists to listen to your favorite songs.</p>
+    <div class="row">
+        <div class="col-8 mx-auto">
+            <div class="about-box p-5 m-5 text-center">
+                Discover new arists, dive deeper on artists you are already familiar with, and create playlists to listen to your favorite songs. My music manager is made for those that obssesse over thier media collection and the DJs that need an easy to make playlists.
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <a href="artist_overview.html"  class="btn btn-custom">Artists</a>
+        </div>
+    </div>
+{% endblock %}

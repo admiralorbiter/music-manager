@@ -1,47 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Music Manager</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-</head>
-<body>
-    <h1>Welcome to the Music Manager!</h1>
-    <div class="container">
-        <h1>Upload your Music CSV</h1>
-        <form action="/upload" method="post" enctype="multipart/form-data" hx-post="/" hx-target="#table" hx-swap="outerHTML">
-            <input type="file" name="file">
-            <input type="submit" value="Upload">
-        </form>
-        <div id="table">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Track Name</th>
-                        <th>Artist</th>
-                        <th>Album</th>
-                        <th>Popularity</th>
-                        <th>Comment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for track in tracks %}
-                    <tr>
-                        <td>{{ track.track_name }}</td>
-                        <td>{{ track.artist_name }}</td>
-                        <td>{{ track.album_name }}</td>
-                        <td>{{track.popularity}}</td>
-                        <td>
-                            <span id="comment-{{track.id}}">{{ track.comment }}</span>
-                            <button hx-get="/edit_comment/{{track.id}}" hx-target="#comment-{{track.id}}" hx-swap="innerHTML">Edit</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+{% extends "base.html" %}
+
+{% block title %}Music Manager{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <h1 class="display-1 title">My Music Manager</h1>
+    <p>Manage your music, playlists and more!</p>
+    <div class="row">
+        <div class="col-8 mx-auto">
+            <div class="about-box p-5 m-5 text-center">
+                Discover new arists, dive deeper on artists you are already
+                familiar with, and create playlists to listen to your favorite songs. 
+                My music manager is made for those that obssesse over thier media 
+                collection and the DJs that need an easy to make playlists. 
+            </div>
+          </div>
         </div>
     </div>
-    <script src="https://unpkg.com/htmx.org"></script>
-</body>
-</html>
+    <div class="row">
+        <div class="col-4">
+            <a href="artists_overview.html"  class="btn btn-custom">Artists</a>
+        </div>
+    </div>
+{% endblock %}

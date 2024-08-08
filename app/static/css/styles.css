@@ -1,0 +1,59 @@
+body{
+    --pale-dogwood: #c1aba6ff;
+    --eggplant: #533b4dff;
+    --hot-pink: #f564a9ff;
+    --amaranth-pink: #faa4bdff;
+    --champagne: #fae3c6ff;
+
+    background-color: var(--hot-pink);
+    font-family: 'Sarala', sans-serif;
+}
+
+.bg-pale-dogwood {
+    background-color: var(--pale-dogwood);
+}
+
+.bg-eggplant {
+    background-color: var(--eggplant);
+}
+
+.bg-hot-pink {
+    background-color: var(--hot-pink);
+}
+
+.bg-amaranth-pink {
+    background-color: var(--amaranth-pink);
+}
+
+.bg-champagne {
+    background-color: var(--champagne);
+}
+
+.text-pale-dogwood {
+    color: var(--pale-dogwood);
+}
+
+.text-eggplant {
+    color: var(--eggplant);
+}
+
+.text-hot-pink {
+    color: var(--hot-pink);
+}
+
+.text-amaranth-pink {
+    color: var(--amaranth-pink);
+}
+
+.text-champagne {
+    color: var(--champagne);
+}
+
+.title {
+    font-family: 'Life Savers', serif;
+    color: var(--champagne);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Kalam', cursive;
+}
