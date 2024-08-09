@@ -5,18 +5,51 @@
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
     <h1 class="display-1 title">Artists</h1>
-    <p>Discover new artists, dive deeper on artists you are already familiar with, and create playlists to listen to your favorite songs.</p>
-    <div class="row">
-        <div class="col-8 mx-auto">
-            <div class="about-box p-5 m-5 text-center">
-                Discover new arists, dive deeper on artists you are already familiar with, and create playlists to listen to your favorite songs. My music manager is made for those that obssesse over thier media collection and the DJs that need an easy to make playlists.
-            </div>
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <a href="artist_overview.html"  class="btn btn-custom">Artists</a>
-        </div>
-    </div>
+    <!-- Search Form -->
+    <form method="GET" action="{{ url_for('artists_overview') }}" class="form-inline mb-3 col-3">
+        <input type="text" name="search" class="form-control mr-2" placeholder="Search by artist name" value="{{ request.args.get('search', '') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Artist Name</th>
+                    <th>Need to Explore</th>
+                    <th>Looked At</th>
+                    <th>Artist Playlist</th>
+                    <th>One of Each</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for artist in artists %}
+                <tr>
+                    <td>{{ artist.artist_name }}</td>
+                    <td>
+                        {% if artist.need_to_explore %}
+                            <i class="fas fa-check"></i>
+                        {% else %}
+                            <i class="far fa-square"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if artist.looked_at %}
+                            <i class="fas fa-check"></i>
+                        {% else %}
+                            <i class="far fa-square"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if artist.artist_playlist %}
+                            <i class="fas fa-check"></i>
+                        {% else %}
+                            <i class="far fa-square"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ artist.one_of_each }}</td>
+                    <td>{{ artist.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 {% endblock %}
