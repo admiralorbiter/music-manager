@@ -42,15 +42,13 @@
                        name="artist_playlist" 
                        {% if artist.artist_playlist %}checked{% endif %}>
             </td>
-            <td>
-                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='one_of_each') }}" 
-                      hx-trigger="click" hx-swap="outerHTML">
+            <td hx-get="{{ url_for('edit_field', artist_id=artist.id, field='one_of_each') }}" hx-trigger="click" hx-swap="innerHTML">
+                <span >
                     {% if artist.one_of_each is none %} {% else %}{{ artist.one_of_each }}{% endif %}
                 </span>
             </td>
-            <td>
-                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='notes') }}" 
-                      hx-trigger="click" hx-swap="outerHTML">
+            <td hx-get="{{ url_for('edit_field', artist_id=artist.id, field='notes') }}" hx-trigger="click" hx-swap="innerHTML">
+                <span>
                     {% if artist.notes is none %} {% else %}{{ artist.notes }}{% endif %}
                 </span>
             </td>
@@ -58,5 +56,11 @@
         {% endfor %}
     </tbody>
 </table>
+<script>
+    function cancelEdit(button) {
+        // Reload the page to revert any changes
+        location.reload();
+    }    
+</script>    
 <script src="https://unpkg.com/htmx.org@1.9.3"></script>
 {% endblock %}
