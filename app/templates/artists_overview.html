@@ -9,7 +9,19 @@
     <input type="text" name="search" class="form-control mr-2" placeholder="Search by artist name" value="{{ request.args.get('search', '') }}">
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
+<style>
+    /* Link Styling */
+a {
+    color: var(--eggplant); /* Set link color to Eggplant */
+    text-decoration: none; /* Remove default underline */
+}
 
+a:hover {
+    color: var(--hot-pink); /* Set hover color to Hot Pink */
+    text-decoration: underline; /* Underline on hover */
+}
+
+</style>
 <!-- Artists Table -->
 <table class="custom-table">
     <thead>
@@ -25,7 +37,11 @@
     <tbody>
         {% for artist in artists %}
         <tr>
-            <td>{{ artist.artist_name }}</td>
+            <td>
+                <a href="{{ url_for('artist_tracks', artist_id=artist.id) }}">
+                    {{ artist.artist_name }}
+                </a>
+            </td>
             <td>
                 <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
                        hx-include="closest tr" 
