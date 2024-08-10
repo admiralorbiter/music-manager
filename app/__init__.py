@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask_migrate import Migrate, migrate, upgrade
 
 persistent_path = os.getenv("PERSISTENT_STORAGE_DIR", os.path.dirname(os.path.realpath(__file__)))
 
@@ -14,6 +15,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['DEBUG'] = True
 
 db = SQLAlchemy()
+migrate = Migrate(app, db)
 
 from app import views
 from app import models

@@ -44,3 +44,28 @@
     transform: scale(1.2); /* Make checkboxes slightly larger */
     margin-right: 10px;
 }
+
+/* Pagination styling */
+.pagination .page-item .page-link {
+    color: var(--eggplant); /* Text color for page links */
+    background-color: var(--champagne); /* Background color for page links */
+    border: 1px solid var(--eggplant); /* Border color for page links */
+}
+
+.pagination .page-item.active .page-link {
+    color: #fff; /* White text for active page */
+    background-color: var(--eggplant); /* Background color for active page */
+    border-color: var(--eggplant); /* Border color for active page */
+}
+
+.pagination .page-item .page-link:hover {
+    color: var(--champagne); /* Text color on hover */
+    background-color: var(--eggplant); /* Background color on hover */
+    border-color: var(--eggplant); /* Border color on hover */
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--pale-dogwood); /* Text color for disabled links */
+    background-color: var(--champagne); /* Background color for disabled links */
+    border-color: var(--champagne); /* Border color for disabled links */
+}

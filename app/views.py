@@ -1,7 +1,7 @@
 from flask import render_template, request, url_for
 from app import app, db
 import pandas as pd
-from app.models import Artist
+from app.models import Artist, SpotifyTrack
 
 @app.route('/')
 def index():
@@ -9,15 +9,25 @@ def index():
 
 @app.route('/artists_overview', methods=['GET'])
 def artists_overview():
-    artists = Artist.query.all()
+    # Get the current page number from the query string (default to 1 if not provided)
+    page = request.args.get('page', 1, type=int)
+    per_page = 30  # Set the number of artists to display per page
+
     search = request.args.get('search', '')
+
     if search:
         # Filter artists by name using the search term
-        artists = Artist.query.filter(Artist.artist_name.ilike(f'%{search}%')).all()
+        query = Artist.query.filter(Artist.artist_name.ilike(f'%{search}%'))
     else:
         # Show all artists if no search term is provided
-        artists = Artist.query.all()
-    return render_template('artists_overview.html', artists=artists)
+        query = Artist.query
+
+    # Paginate the query
+    artists_pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    artists = artists_pagination.items  # Get the artists for the current page
+
+    # Pass the artists and the pagination object to the template
+    return render_template('artists_overview.html', artists=artists, pagination=artists_pagination)
 
 @app.route('/update_artist', methods=['POST'])
 def update_artist():
@@ -52,6 +62,30 @@ def save_field(artist_id, field):
     db.session.commit()
     return f"<span hx-get=\"{url_for('edit_field', artist_id=artist.id, field=field)}\" hx-trigger=\"click\" hx-swap=\"outerHTML\">{new_value}</span>"
 
+@app.route('/spotify_overview', methods=['GET'])
+def spotify_overview():
+    # Get the current page number from the query string (default to 1 if not provided)
+    page = request.args.get('page', 1, type=int)
+    per_page = 50  # Set the number of tracks to display per page
+
+    search = request.args.get('search', '')
+
+    if search:
+        # Filter tracks by name or artist using the search term
+        query = SpotifyTrack.query.filter(
+            (SpotifyTrack.track_name.ilike(f'%{search}%')) |
+            (SpotifyTrack.artist_name.ilike(f'%{search}%'))
+        )
+    else:
+        # Show all tracks if no search term is provided
+        query = SpotifyTrack.query
+
+    # Paginate the query
+    tracks_pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    tracks = tracks_pagination.items  # Get the tracks for the current page
+
+    # Pass the tracks and the pagination object to the template
+    return render_template('spotify_overview.html', tracks=tracks, pagination=tracks_pagination)
 
 def load_data():
     file_path = 'artists.csv'
@@ -68,3 +102,78 @@ def load_data():
         )
         db.session.add(artist)
     db.session.commit()
+
+def load_spotify_data():
+    file_path = 'spotify.csv'
+    # Load the data
+    data = pd.read_csv(file_path)
+    
+    for index, row in data.iterrows():
+        try:
+            # Manually extract each field
+            spotify_id = row['Spotify ID']
+            artist_ids = row['Artist IDs']
+            track_name = row['Track Name']
+            album_name = row['Album Name']
+            helper = row['Helper']
+            artist_name = row['Artist Name(s)']
+            release_date = row['Release Date']
+            duration_ms = int(row['Duration (ms)'])
+            popularity = int(row['Popularity'])
+            added_by = row['Added By']
+            added_at = row['Added At']
+            genres = row['Genres']
+            danceability = float(row['Danceability'])
+            energy = float(row['Energy'])
+            key = int(row['Key'])
+            loudness = float(row['Loudness'])
+            mode = int(row['Mode'])
+            speechiness = float(row['Speechiness'])
+            acousticness = float(row['Acousticness'])
+            instrumentalness = float(row['Instrumentalness'])
+            liveness = float(row['Liveness'])
+            valence = float(row['Valence'])
+            tempo = float(row['Tempo'])
+            time_signature = int(row['Time Signature'])
+
+            # Create the SpotifyTrack object
+            track = SpotifyTrack(
+                spotify_id=spotify_id,
+                artist_ids=artist_ids,
+                track_name=track_name,
+                album_name=album_name,
+                helper=helper,
+                artist_name=artist_name,
+                release_date=release_date,
+                duration_ms=duration_ms,
+                popularity=popularity,
+                added_by=added_by,
+                added_at=added_at,
+                genres=genres,
+                danceability=danceability,
+                energy=energy,
+                key=key,
+                loudness=loudness,
+                mode=mode,
+                speechiness=speechiness,
+                acousticness=acousticness,
+                instrumentalness=instrumentalness,
+                liveness=liveness,
+                valence=valence,
+                tempo=tempo,
+                time_signature=time_signature
+            )
+            db.session.add(track)
+
+        except ValueError as e:
+            # Print out the row causing the error and the error message
+            print(f"Error in row {index}: {row}")
+            print(f"Error: {e}")
+            continue
+
+    # Try to commit the session
+    try:
+        db.session.commit()
+    except Exception as commit_error:
+        print(f"Commit error: {commit_error}")
+        db.session.rollback()

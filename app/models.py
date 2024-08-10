@@ -12,6 +12,36 @@ class Artist(db.Model):
     def __repr__(self):
         return f'<Artist {self.artist_name}>'
 
+class SpotifyTrack(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    spotify_id = db.Column(db.String(255))
+    artist_ids = db.Column(db.String(255))
+    track_name = db.Column(db.String(255))
+    album_name = db.Column(db.String(255))
+    helper = db.Column(db.String(255))
+    artist_name = db.Column(db.String(255))
+    release_date = db.Column(db.String(255))
+    duration_ms = db.Column(db.Integer)
+    popularity = db.Column(db.Integer)
+    added_by = db.Column(db.String(255))
+    added_at = db.Column(db.String(255))
+    genres = db.Column(db.String(1000))
+    danceability = db.Column(db.Float)
+    energy = db.Column(db.Float)
+    key = db.Column(db.Integer)
+    loudness = db.Column(db.Float)
+    mode = db.Column(db.Integer)
+    speechiness = db.Column(db.Float)
+    acousticness = db.Column(db.Float)
+    instrumentalness = db.Column(db.Float)
+    liveness = db.Column(db.Float)
+    valence = db.Column(db.Float)
+    tempo = db.Column(db.Float)
+    time_signature = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f'<SpotifyTrack {self.track_name} by {self.artist_name}>'
+
 class Track(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     track_uri = db.Column(db.String(100), nullable=False, unique=True)
