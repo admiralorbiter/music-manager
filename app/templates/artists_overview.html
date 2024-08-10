@@ -42,8 +42,18 @@
                        name="artist_playlist" 
                        {% if artist.artist_playlist %}checked{% endif %}>
             </td>
-            <td>{{ artist.one_of_each }}</td>
-            <td>{{ artist.notes }}</td>
+            <td>
+                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='one_of_each') }}" 
+                      hx-trigger="click" hx-swap="outerHTML">
+                    {% if artist.one_of_each is none %} {% else %}{{ artist.one_of_each }}{% endif %}
+                </span>
+            </td>
+            <td>
+                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='notes') }}" 
+                      hx-trigger="click" hx-swap="outerHTML">
+                    {% if artist.notes is none %} {% else %}{{ artist.notes }}{% endif %}
+                </span>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

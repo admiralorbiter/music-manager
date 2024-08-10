@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, url_for
 from app import app, db
 import pandas as pd
 from app.models import Artist
@@ -34,6 +34,24 @@ def update_artist():
         db.session.commit()
     
     return '', 204
+
+@app.route('/edit_field/<int:artist_id>/<string:field>', methods=['GET'])
+def edit_field(artist_id, field):
+    artist = Artist.query.get_or_404(artist_id)
+    value = getattr(artist, field)
+    return render_template('edit_field.html', artist=artist, field_name=field, value=value)
+
+
+@app.route('/save_field/<int:artist_id>/<string:field>', methods=['POST'])
+def save_field(artist_id, field):
+    artist = Artist.query.get_or_404(artist_id)
+    new_value = request.form['value']
+    print(f"Received new value for {field}: {new_value}") 
+    setattr(artist, field, new_value)
+    print(artist, field, new_value)
+    db.session.commit()
+    return f"<span hx-get=\"{url_for('edit_field', artist_id=artist.id, field=field)}\" hx-trigger=\"click\" hx-swap=\"outerHTML\">{new_value}</span>"
+
 
 def load_data():
     file_path = 'artists.csv'

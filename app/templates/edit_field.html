@@ -1,0 +1,6 @@
+<form hx-post="{{ url_for('save_field', artist_id=2, field='notes') }}"
+      hx-swap="outerHTML" hx-include="this">
+    <input type="hidden" name="artist_id" value="2">
+    <input type="text" name="value" value="None" class="form-control">
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
