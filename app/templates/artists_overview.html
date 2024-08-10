@@ -1,55 +1,49 @@
-{% extends "base.html" %}
-
-{% block title %}Music Manager{% endblock %}
-
 {% block content %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
-    <h1 class="display-1 title">Artists</h1>
-    <!-- Search Form -->
-    <form method="GET" action="{{ url_for('artists_overview') }}" class="form-inline mb-3 col-3">
-        <input type="text" name="search" class="form-control mr-2" placeholder="Search by artist name" value="{{ request.args.get('search', '') }}">
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Artist Name</th>
-                    <th>Need to Explore</th>
-                    <th>Looked At</th>
-                    <th>Artist Playlist</th>
-                    <th>One of Each</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for artist in artists %}
-                <tr>
-                    <td>{{ artist.artist_name }}</td>
-                    <td>
-                        {% if artist.need_to_explore %}
-                            <i class="fas fa-check"></i>
-                        {% else %}
-                            <i class="far fa-square"></i>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if artist.looked_at %}
-                            <i class="fas fa-check"></i>
-                        {% else %}
-                            <i class="far fa-square"></i>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if artist.artist_playlist %}
-                            <i class="fas fa-check"></i>
-                        {% else %}
-                            <i class="far fa-square"></i>
-                        {% endif %}
-                    </td>
-                    <td>{{ artist.one_of_each }}</td>
-                    <td>{{ artist.notes }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+<h1 class="display-1 title">Artists</h1>
+<!-- Search Form -->
+<form method="GET" action="{{ url_for('artists_overview') }}" class="form-inline mb-3 col-3">
+    <input type="text" name="search" class="form-control mr-2" placeholder="Search by artist name" value="{{ request.args.get('search', '') }}">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Artist Name</th>
+            <th>Need to Explore</th>
+            <th>Looked At</th>
+            <th>Artist Playlist</th>
+            <th>One of Each</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for artist in artists %}
+        <tr>
+            <td>{{ artist.artist_name }}</td>
+            <td>
+                <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
+                       hx-include="closest tr" 
+                       name="need_to_explore" 
+                       {% if artist.need_to_explore %}checked{% endif %}>
+            </td>
+            <td>
+                <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
+                       hx-include="closest tr" 
+                       name="looked_at" 
+                       {% if artist.looked_at %}checked{% endif %}>
+            </td>
+            <td>
+                <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
+                       hx-include="closest tr" 
+                       name="artist_playlist" 
+                       {% if artist.artist_playlist %}checked{% endif %}>
+            </td>
+            <td>{{ artist.one_of_each }}</td>
+            <td>{{ artist.notes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script src="https://unpkg.com/htmx.org@1.9.3"></script>
 {% endblock %}

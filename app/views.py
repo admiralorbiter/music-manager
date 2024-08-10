@@ -19,6 +19,22 @@ def artists_overview():
         artists = Artist.query.all()
     return render_template('artists_overview.html', artists=artists)
 
+@app.route('/update_artist', methods=['POST'])
+def update_artist():
+    artist_name = request.form.get('artist_name')
+    need_to_explore = request.form.get('need_to_explore') == 'on'
+    looked_at = request.form.get('looked_at') == 'on'
+    artist_playlist = request.form.get('artist_playlist') == 'on'
+
+    artist = Artist.query.filter_by(artist_name=artist_name).first()
+    if artist:
+        artist.need_to_explore = need_to_explore
+        artist.looked_at = looked_at
+        artist.artist_playlist = artist_playlist
+        db.session.commit()
+    
+    return '', 204
+
 def load_data():
     file_path = 'artists.csv'
     data = pd.read_csv(file_path)
