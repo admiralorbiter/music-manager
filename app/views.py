@@ -23,9 +23,9 @@ def artists_overview():
         query = Artist.query
 
     # Paginate the query
+    artists = Artist.query.filter_by(hide=False).order_by(Artist.order).all()
     artists_pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     artists = artists_pagination.items  # Get the artists for the current page
-    artists = Artist.query.filter_by(hide=False).order_by(Artist.order).all()
     # Pass the artists and the pagination object to the template
     return render_template('artists_overview.html', artists=artists, pagination=artists_pagination)
 
