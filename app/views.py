@@ -59,6 +59,7 @@ def update_artist():
         artist.looked_at = looked_at
         artist.artist_playlist = artist_playlist
         db.session.commit()
+        print(f"Updated artist: {artist_name}")
     
     return '', 204
 
@@ -85,7 +86,8 @@ def save_field(artist_id, field):
     setattr(artist, field, new_value)
     print(artist, field, new_value)
     db.session.commit()
-    return f"<span hx-get=\"{url_for('edit_field', artist_id=artist.id, field=field)}\" hx-trigger=\"click\" hx-swap=\"outerHTML\">{new_value}</span>"
+    # return f"<span hx-get=\"{url_for('edit_field', artist_id=artist.id, field=field)}\" hx-trigger=\"click\" hx-swap=\"outerHTML\">{new_value}</span>"
+    return f"",204
 
 @app.route('/spotify_overview', methods=['GET'])
 def spotify_overview():

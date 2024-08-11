@@ -44,6 +44,7 @@ a:hover {
                 </a>
             </td>
             <td>
+                <input type="hidden" name="artist_name" value="{{ artist.artist_name }}">
                 <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
                        hx-include="closest tr" 
                        name="need_to_explore" 

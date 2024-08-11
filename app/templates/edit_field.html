@@ -1,17 +1,30 @@
 <form hx-post="{{ url_for('save_field', artist_id=artist.id, field=field_name) }}"
-      hx-swap="outerHTML" hx-include="this" hx-trigger="keyup:Enter blur"
-      data-artist-id="{{ artist.id }}" data-field-name="{{ field_name }}">
+      hx-trigger="submit" 
+      onsubmit="return reloadPage(this)">
     <div class="row">
       <div class="col-8">
         <input type="hidden" name="artist_id" value="{{ artist.id }}">
         <input type="text" name="value" value="{{ value }}" class="form-control">
       </div>
       <div class="col-2">
-        <!-- Save Button (Hidden) -->
-        <button type="submit" class="btn btn-primary" style="display: none;">Save</button>
+        <!-- Save Button -->
+        <button type="submit" class="btn btn-primary bt-sm">Save</button>
 
         <!-- Cancel Button -->
         <button type="button" class="btn btn-secondary bt-sm" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="cancelEdit(this)">Cancel</button>
       </div>
     </div>
 </form>
+
+<script>
+    function reloadPage(form) {
+      htmx.on('htmx:afterRequest', function(evt) {
+        location.reload();
+      });
+    }
+
+    function cancelEdit(button) {
+        // Reload the page to revert any changes
+        location.reload();
+    }
+</script>

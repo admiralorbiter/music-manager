@@ -1,12 +1,12 @@
 <h1 class="display-1 title">My Music Manager</h1>
 <div class="row" style="background-color: #faa4bdff;">
     <div class="col-4">
-        <a href="../artists_overview"  class="btn btn-custom">Artists</a>
+        <a href="{{ url_for('artists_overview') }}" class="btn btn-custom">Artists</a>
     </div>
     <div class="col-4">
-        <a href="../spotify_overview" class="btn btn-custom">Spotify Tracks</a>
+        <a href="{{ url_for('spotify_overview') }}" class="btn btn-custom">Spotify Tracks</a>
     </div>
     <div class="col-4">
-        <a href="../tidal_overview" class="btn btn-custom">Tidal Tracks</a>
+        <a href="{{ url_for('tidal_overview') }}" class="btn btn-custom">Tidal Tracks</a>
     </div>
 </div>
