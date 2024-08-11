@@ -68,11 +68,14 @@ def edit_field(artist_id, field):
     value = getattr(artist, field)
     return render_template('edit_field.html', artist=artist, field_name=field, value=value)
 
-@app.route('/artist_tracks/<int:artist_id>', methods=['GET'])
+@app.route('/artist/<int:artist_id>/tracks', methods=['GET'])
 def artist_tracks(artist_id):
     artist = Artist.query.get_or_404(artist_id)
-    tracks = SpotifyTrack.query.filter(SpotifyTrack.artist_name.ilike(f'%{artist.artist_name}%')).all()
-    return render_template('artist_tracks.html', artist=artist, tracks=tracks)
+    spotify_tracks = SpotifyTrack.query.filter_by(artist_name=artist.artist_name).all()
+    tidal_tracks = TidalTrack.query.filter_by(artist_name=artist.artist_name).all()
+    
+    return render_template('artist_tracks.html', artist=artist, spotify_tracks=spotify_tracks, tidal_tracks=tidal_tracks)
+
 
 @app.route('/save_field/<int:artist_id>/<string:field>', methods=['POST'])
 def save_field(artist_id, field):

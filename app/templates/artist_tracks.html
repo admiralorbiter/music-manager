@@ -5,52 +5,88 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
 {% include 'nav.html' %}
 <h1 class="display-1 title">Tracks by {{ artist.artist_name }}</h1>
-<style>
-    .shorty{
-        max-width: 8vh;
-    }
-</style>
-<!-- Tracks Table -->
-<table class="custom-table">
-    <thead>
-        <tr>
-            <th>Track Name</th>
-            <th>Album Name</th>
-            <th>Release Date</th>
-            <th>Popularity</th>
-            <th class="shorty">Dance ability</th>
-            <th class="shorty">Energy</th>
-            <th class="shorty">Key</th>
-            <th class="shorty text-center">Loud ness</th>
-            <th class="shorty">Speech iness</th>
-            <th class="shorty">Acoust icness</th>
-            <th class="shorty">Instru mental</th>
-            <th class="shorty">Liven ess</th>
-            <th class="shorty">Valence</th>
-            <th class="shorty">Tempo</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for track in tracks %}
-        <tr>
-            <td>{{ track.track_name }}</td>
-            <td>{{ track.album_name }}</td>
-            <td>{{ track.release_date }}</td>
-            <td>{{ track.popularity }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.danceability) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.energy) }}</td>
-            <td class="shorty">{{ track.key }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.loudness) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.speechiness) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.acousticness) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.instrumentalness) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.liveness) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.valence) }}</td>
-            <td class="shorty">{{ "%.2f" | format(track.tempo) }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+<!-- Tabs for Spotify and Tidal -->
+<ul class="nav nav-tabs" id="trackTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="spotify-tab" data-bs-toggle="tab" data-bs-target="#spotify" type="button" role="tab" aria-controls="spotify" aria-selected="true">Spotify Tracks</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tidal-tab" data-bs-toggle="tab" data-bs-target="#tidal" type="button" role="tab" aria-controls="tidal" aria-selected="false">Tidal Tracks</button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="trackTabsContent">
+    <!-- Spotify Tracks Tab -->
+    <div class="tab-pane fade show active" id="spotify" role="tabpanel" aria-labelledby="spotify-tab">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Track Name</th>
+                    <th>Album Name</th>
+                    <th>Release Date</th>
+                    <th>Popularity</th>
+                    <th class="shorty">Dance ability</th>
+                    <th class="shorty">Energy</th>
+                    <th class="shorty">Key</th>
+                    <th class="shorty text-center">Loud ness</th>
+                    <th class="shorty">Speech iness</th>
+                    <th class="shorty">Acoust icness</th>
+                    <th class="shorty">Instru mental</th>
+                    <th class="shorty">Liven ess</th>
+                    <th class="shorty">Valence</th>
+                    <th class="shorty">Tempo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track in spotify_tracks %}
+                <tr>
+                    <td>{{ track.track_name }}</td>
+                    <td>{{ track.album_name }}</td>
+                    <td>{{ track.release_date }}</td>
+                    <td>{{ track.popularity }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.danceability) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.energy) }}</td>
+                    <td class="shorty">{{ track.key }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.loudness) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.speechiness) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.acousticness) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.instrumentalness) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.liveness) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.valence) }}</td>
+                    <td class="shorty">{{ "%.2f" | format(track.tempo) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tidal Tracks Tab -->
+    <div class="tab-pane fade" id="tidal" role="tabpanel" aria-labelledby="tidal-tab">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Track Name</th>
+                    <th>Album Name</th>
+                    <th>Playlist Name</th>
+                    <th>ISRC</th>
+                    <th>Tidal ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track in tidal_tracks %}
+                <tr>
+                    <td>{{ track.track_name }}</td>
+                    <td>{{ track.album }}</td>
+                    <td>{{ track.playlist_name }}</td>
+                    <td>{{ track.isrc }}</td>
+                    <td>{{ track.tidal_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <!-- Back Button -->
 <a href="{{ url_for('artists_overview') }}" class="btn btn-secondary mt-3">Back to Artists</a>

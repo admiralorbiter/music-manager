@@ -68,3 +68,34 @@
     background-color: var(--champagne); /* Background color for disabled links */
     border-color: var(--champagne); /* Border color for disabled links */
 }
+
+/* Tab styling */
+.nav-tabs .nav-link {
+    color: var(--eggplant); /* Eggplant text color for tabs */
+    background-color: var(--champagne); /* Champagne background for tabs */
+    border: 1px solid var(--eggplant); /* Eggplant border for tabs */
+    margin-right: 5px; /* Space between tabs */
+    padding: 0.5rem 1rem; /* Padding inside the tabs */
+    border-radius: 0.25rem 0.25rem 0 0; /* Rounded top corners */
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff; /* White text color for active tab */
+    background-color: var(--eggplant); /* Eggplant background for active tab */
+    border-color: var(--eggplant); /* Eggplant border for active tab */
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--champagne); /* Champagne text color on hover */
+    background-color: var(--eggplant); /* Eggplant background on hover */
+    border-color: var(--eggplant); /* Eggplant border on hover */
+}
+
+/* Tab content area styling */
+.tab-content {
+    border: 1px solid var(--eggplant); /* Eggplant border around tab content */
+    border-top: none; /* Remove top border to blend with active tab */
+    background-color: var(--champagne); /* Champagne background for tab content */
+    padding: 1rem; /* Padding inside the tab content */
+    border-radius: 0 0 0.25rem 0.25rem; /* Rounded bottom corners */
+}
