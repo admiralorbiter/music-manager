@@ -2,9 +2,13 @@
 
 {% block title %}Tracks for {{ artist.artist_name }}{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/artist_tracks.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
 <h1 class="display-1 title">Tracks by {{ artist.artist_name }}</h1>
-
+<style>
+    .shorty{
+        max-width: 8vh;
+    }
+</style>
 <!-- Tracks Table -->
 <table class="custom-table">
     <thead>
@@ -12,8 +16,17 @@
             <th>Track Name</th>
             <th>Album Name</th>
             <th>Release Date</th>
-            <th>Duration (ms)</th>
             <th>Popularity</th>
+            <th class="shorty">Dance ability</th>
+            <th class="shorty">Energy</th>
+            <th class="shorty">Key</th>
+            <th class="shorty text-center">Loud ness</th>
+            <th class="shorty">Speech iness</th>
+            <th class="shorty">Acoust icness</th>
+            <th class="shorty">Instru mental</th>
+            <th class="shorty">Liven ess</th>
+            <th class="shorty">Valence</th>
+            <th class="shorty">Tempo</th>
         </tr>
     </thead>
     <tbody>
@@ -22,8 +35,17 @@
             <td>{{ track.track_name }}</td>
             <td>{{ track.album_name }}</td>
             <td>{{ track.release_date }}</td>
-            <td>{{ track.duration_ms }}</td>
             <td>{{ track.popularity }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.danceability) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.energy) }}</td>
+            <td class="shorty">{{ track.key }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.loudness) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.speechiness) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.acousticness) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.instrumentalness) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.liveness) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.valence) }}</td>
+            <td class="shorty">{{ "%.2f" | format(track.tempo) }}</td>
         </tr>
         {% endfor %}
     </tbody>
