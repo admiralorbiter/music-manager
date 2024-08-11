@@ -1,7 +1,7 @@
 from flask import render_template, request, url_for
 from app import app, db
 import pandas as pd
-from app.models import Artist, SpotifyTrack
+from app.models import Artist, SpotifyTrack, TidalTrack
 
 @app.route('/')
 def index():
@@ -28,6 +28,23 @@ def artists_overview():
 
     # Pass the artists and the pagination object to the template
     return render_template('artists_overview.html', artists=artists, pagination=artists_pagination)
+
+@app.route('/tidal_overview', methods=['GET'])
+def tidal_overview():
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '')
+
+    if search:
+        # Filter tidal tracks by track name or artist name using the search term
+        tracks = TidalTrack.query.filter(
+            TidalTrack.track_name.ilike(f'%{search}%') | 
+            TidalTrack.artist_name.ilike(f'%{search}%')
+        ).paginate(page=page, per_page=10)
+    else:
+        # Show all tidal tracks if no search term is provided
+        tracks = TidalTrack.query.paginate(page=page, per_page=10)
+
+    return render_template('tidal_tracks.html', tracks=tracks.items, pagination=tracks, search=search)
 
 @app.route('/update_artist', methods=['POST'])
 def update_artist():
@@ -107,6 +124,29 @@ def load_data():
         )
         db.session.add(artist)
     db.session.commit()
+
+def load_tidal_data():
+    file_path = 'tidal.csv'  # Update this to the path of your CSV file
+    data = pd.read_csv(file_path)
+
+    for _, row in data.iterrows():
+        tidal_track = TidalTrack(
+            track_name=row['Track name'],
+            artist_name=row['Artist name'],
+            album_name=row['Album'],
+            playlist_name=row['Playlist name'],
+            type=row['Type'],
+            isrc=row['ISRC'],
+            tidal_id=row['Tidal - id']
+        )
+        db.session.add(tidal_track)
+    
+    try:
+        db.session.commit()
+        print("Tidal data successfully loaded.")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error loading Tidal data: {e}")
 
 def load_spotify_data():
     file_path = 'spotify.csv'

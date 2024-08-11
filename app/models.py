@@ -12,6 +12,19 @@ class Artist(db.Model):
     def __repr__(self):
         return f'<Artist {self.artist_name}>'
 
+class TidalTrack(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    track_name = db.Column(db.String(255))
+    artist_name = db.Column(db.String(255))
+    album_name = db.Column(db.String(255))
+    playlist_name = db.Column(db.String(255))
+    type = db.Column(db.String(50))
+    isrc = db.Column(db.String(20))
+    tidal_id = db.Column(db.String(50))
+
+    def __repr__(self):
+        return f'<TidalTrack {self.track_name} by {self.artist_name}>'
+
 class SpotifyTrack(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spotify_id = db.Column(db.String(255))
