@@ -21,7 +21,6 @@ a:hover {
     color: var(--hot-pink); /* Set hover color to Hot Pink */
     text-decoration: underline; /* Underline on hover */
 }
-
 </style>
 <!-- Artists Table -->
 <table class="custom-table">
@@ -35,9 +34,9 @@ a:hover {
             <th>Notes</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="artist-table-body">
         {% for artist in artists %}
-        <tr>
+        <tr data-id="{{ artist.id }}">
             <td>
                 <a href="{{ url_for('artist_tracks', artist_id=artist.id) }}">
                     {{ artist.artist_name }}
@@ -128,11 +127,38 @@ a:hover {
     </ul>
 </nav>
 
+<script src="https://unpkg.com/htmx.org@1.9.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>
+    // Initialize Sortable on the artist table body
+    var sortable = Sortable.create(document.getElementById('artist-table-body'), {
+        animation: 150,
+        onEnd: function (/**Event*/evt) {
+            var itemEl = evt.item;  // dragged HTMLElement
+            var order = sortable.toArray();  // Array of the current order
+            console.log(order);
+
+            // Send the new order to the server
+            fetch('{{ url_for("reorder_artists") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({order: order})
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Order updated successfully');
+                } else {
+                    console.error('Failed to update order');
+                }
+            });
+        },
+        dataIdAttr: 'data-id'  // Use the data-id attribute for sorting
+    });
+
     function cancelEdit(button) {
         // Reload the page to revert any changes
         location.reload();
     }    
-</script>    
-<script src="https://unpkg.com/htmx.org@1.9.3"></script>
+</script>
 {% endblock %}

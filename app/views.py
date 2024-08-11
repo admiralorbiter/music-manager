@@ -102,8 +102,15 @@ def artist_tracks(artist_id):
                            sort_by=sort_by, 
                            order=order)
 
-
-
+@app.route('/reorder_artists', methods=['POST'])
+def reorder_artists():
+    order = request.json.get('order', [])
+    for index, artist_id in enumerate(order):
+        artist = Artist.query.get(int(artist_id))
+        if artist:
+            artist.order = index + 1  # Assuming you have an 'order' column in your model
+    db.session.commit()
+    return '', 204
 
 @app.route('/save_field/<int:artist_id>/<string:field>', methods=['POST'])
 def save_field(artist_id, field):
