@@ -75,6 +75,7 @@ def artist_tracks(artist_id):
     sort_by = request.args.get('sort', 'album_name')  # Default sort by album name
     order = request.args.get('order', 'asc')  # Default order is ascending
 
+    # Fetching sorted Spotify tracks
     if sort_by == 'album_name':
         if order == 'asc':
             spotify_tracks = SpotifyTrack.query.filter_by(artist_name=artist.artist_name).order_by(SpotifyTrack.album_name.asc()).all()
@@ -82,8 +83,25 @@ def artist_tracks(artist_id):
         else:
             spotify_tracks = SpotifyTrack.query.filter_by(artist_name=artist.artist_name).order_by(SpotifyTrack.album_name.desc()).all()
             tidal_tracks = TidalTrack.query.filter_by(artist_name=artist.artist_name).order_by(TidalTrack.album_name.desc()).all()
-    
-    return render_template('artist_tracks.html', artist=artist, spotify_tracks=spotify_tracks, tidal_tracks=tidal_tracks, sort_by=sort_by, order=order)
+
+    # Identifying common and unique tracks
+    spotify_track_names = {track.track_name for track in spotify_tracks}
+    tidal_track_names = {track.track_name for track in tidal_tracks}
+
+    common_tracks = spotify_track_names & tidal_track_names  # Intersection
+    unique_spotify_tracks = spotify_track_names - tidal_track_names  # Spotify only
+    unique_tidal_tracks = tidal_track_names - spotify_track_names  # Tidal only
+
+    return render_template('artist_tracks.html', 
+                           artist=artist, 
+                           spotify_tracks=spotify_tracks, 
+                           tidal_tracks=tidal_tracks,
+                           common_tracks=common_tracks,
+                           unique_spotify_tracks=unique_spotify_tracks,
+                           unique_tidal_tracks=unique_tidal_tracks,
+                           sort_by=sort_by, 
+                           order=order)
+
 
 
 

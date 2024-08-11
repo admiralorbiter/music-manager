@@ -6,13 +6,16 @@
 {% include 'nav.html' %}
 <h1 class="display-1 title">Tracks by {{ artist.artist_name }}</h1>
 
-<!-- Tabs for Spotify and Tidal -->
+<!-- Tabs for Spotify, Tidal, and Comparison -->
 <ul class="nav nav-tabs" id="trackTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="spotify-tab" data-bs-toggle="tab" data-bs-target="#spotify" type="button" role="tab" aria-controls="spotify" aria-selected="true">Spotify Tracks</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="tidal-tab" data-bs-toggle="tab" data-bs-target="#tidal" type="button" role="tab" aria-controls="tidal" aria-selected="false">Tidal Tracks</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="comparison-tab" data-bs-toggle="tab" data-bs-target="#comparison" type="button" role="tab" aria-controls="comparison" aria-selected="false">Comparison</button>
     </li>
 </ul>
 
@@ -77,7 +80,7 @@
                 {% for track in tidal_tracks %}
                 <tr>
                     <td>{{ track.track_name }}</td>
-                    <td>{{ track.album }}</td>
+                    <td>{{ track.album_name }}</td>
                     <td>{{ track.playlist_name }}</td>
                     <td>{{ track.isrc }}</td>
                     <td>{{ track.tidal_id }}</td>
@@ -85,6 +88,36 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- Comparison Tab -->
+    <div class="tab-pane fade" id="comparison" role="tabpanel" aria-labelledby="comparison-tab">
+        <h3>Tracks in Both Spotify and Tidal</h3>
+        <ul>
+            {% for track in common_tracks %}
+            <li>{{ track }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Unique Tracks</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Spotify Only</h4>
+                <ul>
+                    {% for track in unique_spotify_tracks %}
+                    <li>{{ track }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h4>Tidal Only</h4>
+                <ul>
+                    {% for track in unique_tidal_tracks %}
+                    <li>{{ track }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
