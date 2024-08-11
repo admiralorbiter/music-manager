@@ -3,6 +3,7 @@
 {% block title %}Tracks for {{ artist.artist_name }}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+{% include 'nav.html' %}
 <h1 class="display-1 title">Tracks by {{ artist.artist_name }}</h1>
 <style>
     .shorty{
