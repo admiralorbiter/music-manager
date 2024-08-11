@@ -25,7 +25,7 @@ def artists_overview():
     # Paginate the query
     artists_pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     artists = artists_pagination.items  # Get the artists for the current page
-
+    artists = Artist.query.filter_by(hide=False).order_by(Artist.order).all()
     # Pass the artists and the pagination object to the template
     return render_template('artists_overview.html', artists=artists, pagination=artists_pagination)
 
@@ -109,6 +109,16 @@ def reorder_artists():
         artist = Artist.query.get(int(artist_id))
         if artist:
             artist.order = index + 1  # Assuming you have an 'order' column in your model
+    db.session.commit()
+    return '', 204
+
+@app.route('/hide_artist', methods=['POST'])
+def hide_artist():
+    data = request.get_json()
+    artist_id = data.get('artist_id')
+    artist = Artist.query.get_or_404(artist_id)
+    
+    artist.hide = True  # Set the hide flag to True
     db.session.commit()
     return '', 204
 

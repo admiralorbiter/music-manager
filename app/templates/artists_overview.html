@@ -32,6 +32,7 @@ a:hover {
             <th>Artist Playlist</th>
             <th>One of Each</th>
             <th>Notes</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody id="artist-table-body">
@@ -70,6 +71,12 @@ a:hover {
                 <span>
                     {% if artist.notes is none %} {% else %}{{ artist.notes }}{% endif %}
                 </span>
+            </td>
+            <td>
+                <!-- Hide Button with FontAwesome icon -->
+                <button class="btn btn-danger btn-sm" style="font-size: .5em;" onclick="confirmHideArtist({{ artist.id }})">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
             </td>
         </tr>
         {% endfor %}
@@ -129,6 +136,27 @@ a:hover {
 
 <script src="https://unpkg.com/htmx.org@1.9.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+<script>
+    function confirmHideArtist(artistId) {
+        if (confirm("Are you sure you want to hide this artist?")) {
+            // Make a POST request to hide the artist
+            fetch('{{ url_for("hide_artist") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({artist_id: artistId})
+            }).then(response => {
+                if (response.ok) {
+                    // Reload the page to reflect the changes
+                    location.reload();
+                } else {
+                    alert('Failed to hide the artist.');
+                }
+            });
+        }
+    }
+</script>
 <script>
     // Initialize Sortable on the artist table body
     var sortable = Sortable.create(document.getElementById('artist-table-body'), {

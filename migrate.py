@@ -11,9 +11,9 @@ with app.app_context():
         init()  # Initialize the migrations directory
 
     # Generate migration scripts
-    migrate()
+    # migrate()
 
     # Apply the migrations
-    upgrade()
+    # upgrade()
 
     print("Migration and upgrade complete.")

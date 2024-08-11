@@ -9,7 +9,7 @@ class Artist(db.Model):
     one_of_each = db.Column(db.String(120), nullable=True)
     notes = db.Column(db.Text, nullable=True)
     order = db.Column(db.Integer, nullable=False, default=0)
-
+    hide = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f'<Artist {self.artist_name}>'
