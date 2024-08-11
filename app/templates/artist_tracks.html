@@ -23,7 +23,7 @@
             <thead>
                 <tr>
                     <th>Track Name</th>
-                    <th>Album Name</th>
+                    <th><a href="{{ url_for('artist_tracks', artist_id=artist.id, sort='album_name', order='asc' if order == 'desc' else 'desc') }}">Album Name</a></th>
                     <th>Release Date</th>
                     <th>Popularity</th>
                     <th class="shorty">Dance ability</th>
@@ -67,7 +67,7 @@
             <thead>
                 <tr>
                     <th>Track Name</th>
-                    <th>Album Name</th>
+                    <th><a href="{{ url_for('artist_tracks', artist_id=artist.id, sort='album_name', order='asc' if order == 'desc' else 'desc') }}">Album Name</a></th>
                     <th>Playlist Name</th>
                     <th>ISRC</th>
                     <th>Tidal ID</th>

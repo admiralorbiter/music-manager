@@ -72,10 +72,19 @@ def edit_field(artist_id, field):
 @app.route('/artist/<int:artist_id>/tracks', methods=['GET'])
 def artist_tracks(artist_id):
     artist = Artist.query.get_or_404(artist_id)
-    spotify_tracks = SpotifyTrack.query.filter_by(artist_name=artist.artist_name).all()
-    tidal_tracks = TidalTrack.query.filter_by(artist_name=artist.artist_name).all()
+    sort_by = request.args.get('sort', 'album_name')  # Default sort by album name
+    order = request.args.get('order', 'asc')  # Default order is ascending
+
+    if sort_by == 'album_name':
+        if order == 'asc':
+            spotify_tracks = SpotifyTrack.query.filter_by(artist_name=artist.artist_name).order_by(SpotifyTrack.album_name.asc()).all()
+            tidal_tracks = TidalTrack.query.filter_by(artist_name=artist.artist_name).order_by(TidalTrack.album_name.asc()).all()
+        else:
+            spotify_tracks = SpotifyTrack.query.filter_by(artist_name=artist.artist_name).order_by(SpotifyTrack.album_name.desc()).all()
+            tidal_tracks = TidalTrack.query.filter_by(artist_name=artist.artist_name).order_by(TidalTrack.album_name.desc()).all()
     
-    return render_template('artist_tracks.html', artist=artist, spotify_tracks=spotify_tracks, tidal_tracks=tidal_tracks)
+    return render_template('artist_tracks.html', artist=artist, spotify_tracks=spotify_tracks, tidal_tracks=tidal_tracks, sort_by=sort_by, order=order)
+
 
 
 @app.route('/save_field/<int:artist_id>/<string:field>', methods=['POST'])
