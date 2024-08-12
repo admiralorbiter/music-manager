@@ -24,12 +24,19 @@ def artists_overview():
         # Show all artists if no search term is provided
         query = Artist.query
 
+    # Apply the hide filter to the query
+    query = query.filter_by(hide=False)
+
+    # Order by the 'order' field
+    query = query.order_by(Artist.order)
+
     # Paginate the query
-    artists = Artist.query.filter_by(hide=False).order_by(Artist.order).all()
     artists_pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     artists = artists_pagination.items  # Get the artists for the current page
+
     # Pass the artists and the pagination object to the template
     return render_template('artists_overview.html', artists=artists, pagination=artists_pagination)
+
 
 @app.route('/tidal_overview', methods=['GET'])
 def tidal_overview():

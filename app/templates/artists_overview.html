@@ -65,14 +65,22 @@ a:hover {
                        name="artist_playlist" 
                        {% if artist.artist_playlist %}checked{% endif %}>
             </td>
-            <td hx-get="{{ url_for('edit_field', artist_id=artist.id, field='one_of_each') }}" hx-trigger="click" hx-swap="innerHTML">
-                <span>
-                    {% if artist.one_of_each is none %} {% else %}{{ artist.one_of_each }}{% endif %}
+            <td>
+                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='one_of_each') }}" hx-trigger="click" hx-swap="innerHTML">
+                    {% if artist.one_of_each is none %}
+                        {% for i in range(50) %}&nbsp;{% endfor %}
+                    {% else %}
+                        {{ artist.one_of_each }}
+                    {% endif %}
                 </span>
             </td>
-            <td hx-get="{{ url_for('edit_field', artist_id=artist.id, field='notes') }}" hx-trigger="click" hx-swap="innerHTML">
-                <span>
-                    {% if artist.notes is none %} {% else %}{{ artist.notes }}{% endif %}
+            <td>
+                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='notes') }}" hx-trigger="click" hx-swap="innerHTML">
+                    {% if artist.notes is none %}
+                        {% for i in range(50) %}&nbsp;{% endfor %}
+                    {% else %}
+                        {{ artist.notes }}
+                    {% endif %}
                 </span>
             </td>
             <td>
