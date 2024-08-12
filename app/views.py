@@ -313,21 +313,28 @@ def sync_data(artist_id):
                 db.session.commit()
                 existing_album = new_album
             
-            # Fetch tracks for this album
-            track_response = requests.get(f'https://musicbrainz.org/ws/2/recording?release={album_mbid}&fmt=json')
-            if track_response.status_code == 200:
-                tracks_data = track_response.json().get('recordings', [])
-                for index, track in enumerate(tracks_data):
-                    track_name = track.get('title')
-                    track_order = index + 1
+            if existing_album:
+                print("Tracks for album:", existing_album.album_name)
+                
+                # Fetch releases for the album
+                release_response = requests.get(f'https://musicbrainz.org/ws/2/release?release-group={album_mbid}&fmt=json')
+                if release_response.status_code == 200:
+                    release_mbid = release_response.json()['releases'][0]['id']
                     
-                    # Check if track already exists
-                    existing_track = MusicBrainzTrack.query.filter_by(track_name=track_name, album_id=existing_album.id).first()
-                    if not existing_track:
-                        new_track = MusicBrainzTrack(track_name=track_name, track_order=track_order, album_id=existing_album.id)
-                        db.session.add(new_track)
-                db.session.commit()
-        
+                    # Fetch tracks for this release
+                    track_response = requests.get(f'https://musicbrainz.org/ws/2/recording?release={release_mbid}&fmt=json')
+                    if track_response.status_code == 200:
+                        tracks_data = track_response.json().get('recordings', [])
+                        for index, track in enumerate(tracks_data):
+                            track_name = track.get('title')
+                            track_order = index + 1
+                            
+                            # Check if track already exists
+                            existing_track = MusicBrainzTrack.query.filter_by(track_name=track_name, album_id=existing_album.id).first()
+                            if not existing_track:
+                                new_track = MusicBrainzTrack(track_name=track_name, track_order=track_order, album_id=existing_album.id)
+                                db.session.add(new_track)
+                        db.session.commit()
         return "Artist info and tracks updated successfully"
     else:
         return "Failed to fetch artist info", 500
