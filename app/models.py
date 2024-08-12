@@ -10,9 +10,30 @@ class Artist(db.Model):
     notes = db.Column(db.Text, nullable=True)
     order = db.Column(db.Integer, nullable=False, default=0)
     hide = db.Column(db.Boolean, nullable=False, default=False)
+    musicbrainz_id = db.Column(db.String(36), nullable=True)
+    musicbrainz_data = db.relationship('MusicBrainzAlbum', backref='artist', lazy=True)
 
     def __repr__(self):
         return f'<Artist {self.artist_name}>'
+
+class MusicBrainzAlbum(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    album_name = db.Column(db.String(255), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'), nullable=False)
+    tracks = db.relationship('MusicBrainzTrack', backref='album', lazy=True)
+
+    def __repr__(self):
+        return f'<MusicBrainzAlbum {self.album_name}>'
+
+
+class MusicBrainzTrack(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    track_name = db.Column(db.String(255), nullable=False)
+    track_order = db.Column(db.Integer, nullable=False)
+    album_id = db.Column(db.Integer, db.ForeignKey('music_brainz_album.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<MusicBrainzTrack {self.track_name} - Order {self.track_order}>'
 
 class TidalTrack(db.Model):
     id = db.Column(db.Integer, primary_key=True)

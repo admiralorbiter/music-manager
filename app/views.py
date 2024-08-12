@@ -1,7 +1,9 @@
 from flask import render_template, request, url_for
 from app import app, db
 import pandas as pd
-from app.models import Artist, SpotifyTrack, TidalTrack
+from app.models import Artist, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack
+import requests
+from flask import jsonify
 
 @app.route('/')
 def index():
@@ -271,3 +273,61 @@ def load_spotify_data():
     except Exception as commit_error:
         print(f"Commit error: {commit_error}")
         db.session.rollback()
+
+@app.route('/sync/<int:artist_id>', methods=['POST'])
+def sync_data(artist_id):
+    artist = Artist.query.get(artist_id)
+    if not artist:
+        return "Artist not found", 404
+
+    # Step 1: Check if MusicBrainz ID is stored
+    mbid = artist.musicbrainz_id
+    if not mbid:
+        # Step 2: Search for the artist by name to get the MusicBrainz ID
+        response = requests.get(f'https://musicbrainz.org/ws/2/artist/?query={artist.artist_name}&fmt=json')
+        if response.status_code == 200:
+            data = response.json()
+            if data['artists']:
+                mbid = data['artists'][0]['id']
+                artist.musicbrainz_id = mbid
+                db.session.commit()
+            else:
+                return "Artist not found", 404
+        else:
+            return "Artist not found", 500
+
+    # Step 3: Fetch detailed artist info using the MusicBrainz ID
+    response = requests.get(f'https://musicbrainz.org/ws/2/release-group?artist={mbid}&type=album&fmt=json')
+    if response.status_code == 200:
+        albums_data = response.json().get('release-groups', [])
+        
+        for album in albums_data:
+            album_name = album.get('title')
+            album_mbid = album.get('id')
+            
+            # Check if album already exists
+            existing_album = MusicBrainzAlbum.query.filter_by(album_name=album_name, artist_id=artist.id).first()
+            if not existing_album:
+                new_album = MusicBrainzAlbum(album_name=album_name, artist_id=artist.id)
+                db.session.add(new_album)
+                db.session.commit()
+                existing_album = new_album
+            
+            # Fetch tracks for this album
+            track_response = requests.get(f'https://musicbrainz.org/ws/2/recording?release={album_mbid}&fmt=json')
+            if track_response.status_code == 200:
+                tracks_data = track_response.json().get('recordings', [])
+                for index, track in enumerate(tracks_data):
+                    track_name = track.get('title')
+                    track_order = index + 1
+                    
+                    # Check if track already exists
+                    existing_track = MusicBrainzTrack.query.filter_by(track_name=track_name, album_id=existing_album.id).first()
+                    if not existing_track:
+                        new_track = MusicBrainzTrack(track_name=track_name, track_order=track_order, album_id=existing_album.id)
+                        db.session.add(new_track)
+                db.session.commit()
+        
+        return "Artist info and tracks updated successfully"
+    else:
+        return "Failed to fetch artist info", 500

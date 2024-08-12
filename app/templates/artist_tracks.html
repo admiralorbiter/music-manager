@@ -3,6 +3,7 @@
 {% block title %}Tracks for {{ artist.artist_name }}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% include 'nav.html' %}
 <h1 class="display-1 title">Tracks by {{ artist.artist_name }}</h1>
 
@@ -17,6 +18,10 @@
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="comparison-tab" data-bs-toggle="tab" data-bs-target="#comparison" type="button" role="tab" aria-controls="comparison" aria-selected="false">Comparison</button>
     </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="false">Info</button>
+    </li>
+
 </ul>
 
 <div class="tab-content mt-3" id="trackTabsContent">
@@ -119,6 +124,41 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Info Tab Content -->
+<div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+    <button class="btn btn-primary mb-3" id="syncButton" 
+        hx-post="/sync/{{ artist.id }}" 
+        hx-swap="innerHTML">
+        Sync
+    </button>
+
+    {% if artist.musicbrainz_data %}
+        <div>
+            {% for album in artist.musicbrainz_data %}
+                <h3>{{ album.album_name }}</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Track Order</th>
+                            <th>Track Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for track in album.tracks %}
+                            <tr>
+                                <td>{{ track.track_order }}</td>
+                                <td>{{ track.track_name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No MusicBrainz data available. Please sync to retrieve data.</p>
+    {% endif %}
 </div>
 
 <!-- Back Button -->
