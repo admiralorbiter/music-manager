@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Artists{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+{% include 'nav.html' %}
+    <h1>Artist Roll</h1>
+    <button hx-get="/roll" hx-target="#result" hx-trigger="click">Roll</button>
+    <div id="result"></div>
+{% endblock %}

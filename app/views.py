@@ -1,9 +1,9 @@
-from flask import render_template, request, url_for
+from flask import render_template, request
 from app import app, db
 import pandas as pd
 from app.models import Artist, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack
 import requests
-from flask import jsonify
+import random
 
 @app.route('/')
 def index():
@@ -345,3 +345,15 @@ def sync_data(artist_id):
         return "Artist info and tracks updated successfully"
     else:
         return "Failed to fetch artist info", 500
+    
+@app.route('/roll', methods=['GET'])
+def roll():
+    print("Rolling...")
+    artists = Artist.query.filter_by(hide=False).all()
+    selected_artist = random.choice(artists)
+    return f'<a href="/artist/{selected_artist.id}/tracks">{selected_artist.artist_name}</a>'
+
+@app.route('/random_artist')
+def random_artist():
+    return render_template('random_artist.html')
+
