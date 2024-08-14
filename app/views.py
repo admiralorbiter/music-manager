@@ -1,7 +1,7 @@
 from flask import render_template, request
 from app import app, db
 import pandas as pd
-from app.models import Artist, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack, Playlist
+from app.models import Artist, PlaylistTracks, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack, Playlist
 import requests
 import random
 
@@ -360,20 +360,24 @@ def random_artist():
 @app.route('/add_to_playlist', methods=['POST'])
 def add_to_playlist():
     track_id = request.form.get('track_id')
-    playlist_id = request.form.get('playlist_id')
-    
+    playlist_name = request.form.get('playlist_id')  # This assumes you're searching by playlist name
+    print(track_id, playlist_name)
     track = MusicBrainzTrack.query.get(track_id)
-    playlist = Playlist.query.get(playlist_id)
-    
+    playlist = Playlist.query.filter_by(name=playlist_name).first()
     if track and playlist:
-        if track not in playlist.tracks:
-            playlist.tracks.append(track)
+        # Check if the track is already in the playlist by querying the PlaylistTracks table
+        existing_entry = PlaylistTracks.query.filter_by(playlist_id=playlist.id, track_id=track.id).first()
+
+        if not existing_entry:
+            # Track is not in the playlist, so add it
+            new_playlist_track = PlaylistTracks(playlist_id=playlist.id, track_id=track.id)
+            db.session.add(new_playlist_track)
             db.session.commit()
             print('Track added to playlist!', 'success')
         else:
             print('Track is already in the playlist!', 'warning')
     
-    return '', 204
+    return 'Test', 204
 
 @app.route('/load_search_component/<int:track_id>')
 def load_search_component(track_id):
