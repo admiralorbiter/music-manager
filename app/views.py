@@ -377,7 +377,7 @@ def add_to_playlist():
         else:
             print('Track is already in the playlist!', 'warning')
     
-    return 'Test', 204
+    return render_template('add_playlist_button.html', track_id=track_id)
 
 @app.route('/load_search_component/<int:track_id>')
 def load_search_component(track_id):
