@@ -1,7 +1,7 @@
 from flask import render_template, request
 from app import app, db
 import pandas as pd
-from app.models import Artist, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack
+from app.models import Artist, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack, Playlist
 import requests
 import random
 
@@ -357,3 +357,24 @@ def roll():
 def random_artist():
     return render_template('random_artist.html')
 
+@app.route('/add_to_playlist', methods=['POST'])
+def add_to_playlist():
+    track_id = request.form.get('track_id')
+    playlist_id = request.form.get('playlist_id')
+    
+    track = MusicBrainzTrack.query.get(track_id)
+    playlist = Playlist.query.get(playlist_id)
+    
+    if track and playlist:
+        if track not in playlist.tracks:
+            playlist.tracks.append(track)
+            db.session.commit()
+            print('Track added to playlist!', 'success')
+        else:
+            print('Track is already in the playlist!', 'warning')
+    
+    return '', 204
+
+@app.route('/load_search_component/<int:track_id>')
+def load_search_component(track_id):
+    return render_template('search_component.html', track_id=track_id)

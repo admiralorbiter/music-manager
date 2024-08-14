@@ -31,6 +31,7 @@ class MusicBrainzTrack(db.Model):
     track_name = db.Column(db.String(255), nullable=False)
     track_order = db.Column(db.Integer, nullable=False)
     album_id = db.Column(db.Integer, db.ForeignKey('music_brainz_album.id'), nullable=False)
+    playlists = db.relationship('PlaylistTracks', back_populates='track')
 
     def __repr__(self):
         return f'<MusicBrainzTrack {self.track_name} - Order {self.track_order}>'
@@ -103,3 +104,18 @@ class Track(db.Model):
 
     def __repr__(self):
         return f"<Track {self.track_name} by {self.artist_name}>"
+    
+class Playlist(db.Model):
+    __tablename__ = 'playlists'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    tracks = db.relationship('PlaylistTracks', back_populates='playlist')
+
+class PlaylistTracks(db.Model):
+    __tablename__ = 'playlist_tracks'
+    playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.id'), primary_key=True)
+    track_id = db.Column(db.Integer, db.ForeignKey('music_brainz_track.id'), primary_key=True)
+
+    playlist = db.relationship('Playlist', back_populates='tracks')
+    track = db.relationship('MusicBrainzTrack', back_populates='playlists')

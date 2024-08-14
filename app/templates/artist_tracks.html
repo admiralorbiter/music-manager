@@ -150,6 +150,13 @@
                                 <tr>
                                     <td>{{ track.track_order }}</td>
                                     <td>{{ track.track_name }}</td>
+                                    <td>
+                                        <div id="search-component-{{ track.id }}">
+                                            <button class="btn btn-primary btn-sm" hx-get="{{ url_for('load_search_component', track_id=track.id) }}" hx-target="#search-component-{{ track.id }}" hx-swap="outerHTML">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
