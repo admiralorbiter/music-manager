@@ -378,3 +378,24 @@ def add_to_playlist():
 @app.route('/load_search_component/<int:track_id>')
 def load_search_component(track_id):
     return render_template('search_component.html', track_id=track_id)
+
+@app.route('/show_create_playlist_form/<int:track_id>')
+def show_create_playlist_form(track_id):
+    return render_template('create_playlist_form.html', track_id=track_id)
+
+@app.route('/create_playlist', methods=['POST'])
+def create_playlist():
+    new_playlist_name = request.form.get('new_playlist_name')
+    
+    # Logic to create the new playlist
+    new_playlist = Playlist(name=new_playlist_name)
+    db.session.add(new_playlist)
+    db.session.commit()
+
+    # After creating the playlist, return to the original button state
+    return f'<button hx-get="{{ url_for("load_search_component", track_id=request.form.get("track_id")) }}" hx-trigger="click" hx-swap="outerHTML"><i class="fas fa-plus"></i></button>'
+
+@app.route('/playlists_overview')
+def playlists_overview():
+    playlists = Playlist.query.all()  # Fetch all playlists
+    return render_template('playlists_overview.html', playlists=playlists)

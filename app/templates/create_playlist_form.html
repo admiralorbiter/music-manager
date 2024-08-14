@@ -1,0 +1,12 @@
+<form hx-post="{{ url_for('create_playlist') }}" hx-target="#search-component-{{ track_id }}" hx-swap="outerHTML">
+    <div class="form-group">
+        <label for="new-playlist-name">New Playlist Name</label>
+        <input type="text" class="form-control" id="new-playlist-name" name="new_playlist_name" required>
+    </div>
+    <div class="btn-group mt-2">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="button" class="btn btn-secondary" hx-get="{{ url_for('load_search_component', track_id=track_id) }}" hx-target="#search-component-{{ track_id }}" hx-swap="outerHTML">
+            Cancel
+        </button>
+    </div>
+</form>

@@ -1,9 +1,12 @@
 <div id="search-component-{{ track_id }}">
     <input type="text" class="form-control mb-2" placeholder="Search for playlist" id="playlist-search-{{ track_id }}">
-    
+    <div id="create-playlist-form-{{ track_id }}"></div>
     <div class="btn-group">
         <button class="btn btn-success" hx-post="{{ url_for('add_to_playlist', track_id=track_id) }}" hx-vals="{'playlist': document.getElementById('playlist-search-{{ track_id }}').value}" hx-target="#search-component-{{ track_id }}" hx-swap="outerHTML">
             Add
+        </button>
+        <button class="btn btn-info" hx-get="{{ url_for('show_create_playlist_form', track_id=track_id) }}" hx-target="#create-playlist-form-{{ track_id }}" hx-swap="outerHTML">
+            Create New Playlist
         </button>
     </div>
 </div>

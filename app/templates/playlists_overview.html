@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Playlists{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+{% include 'nav.html' %}
+<h1 class="display-1 title">Playlists</h1>
+
+<!-- Playlists Table -->
+<table class="custom-table">
+    <thead>
+        <tr>
+            <th>Playlist Name</th>
+            <th>Description</th>
+            <th>Tracks</th>
+        </tr>
+    </thead>
+    <tbody id="playlist-table-body">
+        {% for playlist in playlists %}
+        <tr>
+            <td>{{ playlist.name }}</td>
+            <td>{{ playlist.description }}</td>
+            <td>
+                <ul>
+                    {% for track in playlist.tracks %}
+                    <li>{{ track.track.title }} by {{ track.track.artist }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://unpkg.com/htmx.org@1.9.3"></script>
+<script>
+    // Additional JS logic if needed
+</script>
+{% endblock %}
