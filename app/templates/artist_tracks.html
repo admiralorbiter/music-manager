@@ -7,6 +7,76 @@
 {% include 'nav.html' %}
 <h1 class="display-1 title">Tracks by {{ artist.artist_name }}</h1>
 
+<!-- Artist details inputs -->
+<div class="artist-details mb-3">
+    <input type="hidden" name="artist_name" value="{{ artist.artist_name }}">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" 
+                       hx-post="{{ url_for('update_artist', artist_id=artist.id) }}" 
+                       hx-include="closest div.artist-details"
+                       name="need_to_explore" 
+                       id="need_to_explore" 
+                       {% if artist.need_to_explore %}checked{% endif %}>
+                <label class="form-check-label" for="need_to_explore">
+                    Need to Explore
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" 
+                       hx-post="{{ url_for('update_artist', artist_id=artist.id) }}" 
+                       hx-include="closest div.artist-details"
+                       name="looked_at" 
+                       id="looked_at" 
+                       {% if artist.looked_at %}checked{% endif %}>
+                <label class="form-check-label" for="looked_at">
+                    Looked At
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" 
+                       hx-post="{{ url_for('update_artist', artist_id=artist.id) }}" 
+                       hx-include="closest div.artist-details"
+                       name="artist_playlist" 
+                       id="artist_playlist" 
+                       {% if artist.artist_playlist %}checked{% endif %}>
+                <label class="form-check-label" for="artist_playlist">
+                    Artist Playlist
+                </label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-2">
+                <label class="form-label">One of Each:</label>
+                <div class="editable-field p-2 border rounded" 
+                     hx-get="{{ url_for('edit_field', artist_id=artist.id, field='one_of_each') }}" 
+                     hx-trigger="click" hx-swap="innerHTML">
+                    {% if artist.one_of_each is none %}
+                        <em class="text-muted">Click to edit</em>
+                    {% else %}
+                        {{ artist.one_of_each }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-2">
+                <label class="form-label">Notes:</label>
+                <div class="editable-field p-2 border rounded" 
+                     hx-get="{{ url_for('edit_field', artist_id=artist.id, field='notes') }}" 
+                     hx-trigger="click" hx-swap="innerHTML">
+                    {% if artist.notes is none %}
+                        <em class="text-muted">Click to edit</em>
+                    {% else %}
+                        {{ artist.notes }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Tabs for Spotify, Tidal, and Comparison -->
 <ul class="nav nav-tabs" id="trackTabs" role="tablist">
     <li class="nav-item" role="presentation">
