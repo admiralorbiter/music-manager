@@ -43,20 +43,23 @@
             </td>
             <td>
                 <input type="hidden" name="artist_name" value="{{ artist.artist_name }}">
-                <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
-                       hx-include="closest tr" 
+                <input type="checkbox" hx-post="{{ url_for('update_artist', artist_id=artist.id) }}" 
+                       hx-trigger="change"
+                       hx-swap="none"
                        name="need_to_explore" 
                        {% if artist.need_to_explore %}checked{% endif %}>
             </td>
             <td>
-                <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
-                       hx-include="closest tr" 
+                <input type="checkbox" hx-post="{{ url_for('update_artist', artist_id=artist.id) }}" 
+                       hx-trigger="change"
+                       hx-swap="none"
                        name="looked_at" 
                        {% if artist.looked_at %}checked{% endif %}>
             </td>
             <td>
-                <input type="checkbox" hx-post="{{ url_for('update_artist') }}" 
-                       hx-include="closest tr" 
+                <input type="checkbox" hx-post="{{ url_for('update_artist', artist_id=artist.id) }}" 
+                       hx-trigger="change"
+                       hx-swap="none"
                        name="artist_playlist" 
                        {% if artist.artist_playlist %}checked{% endif %}>
             </td>

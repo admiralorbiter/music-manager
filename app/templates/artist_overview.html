@@ -25,7 +25,11 @@
                     <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
                 </form>
             </td>
-            <td>{{ 'Yes' if artist.need_to_explore else 'No' }}</td>
+            <td>
+                <!-- Add artist_id to the url_for call -->
+                <input type="checkbox" hx-post="{{ url_for('update_artist', artist_id=artist.id) }}"
+                       name="need_to_explore" {% if artist.need_to_explore %}checked{% endif %}>
+            </td>
             <td>{{ 'Yes' if artist.looked_at else 'No' }}</td>
             <td>{{ 'Yes' if artist.artist_playlist else 'No' }}</td>
             <td>{{ artist.one_of_each }}</td>

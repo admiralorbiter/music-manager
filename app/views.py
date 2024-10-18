@@ -45,23 +45,16 @@ def update_main_artist(artist_id):
         db.session.commit()
     return redirect(url_for('artists_overview'))
 
-@app.route('/update_artist', methods=['POST'])
-def update_artist():
-    artist_name = request.form.get('artist_name')
-    need_to_explore = request.form.get('need_to_explore') == 'on'
-    looked_at = request.form.get('looked_at') == 'on'
-    artist_playlist = request.form.get('artist_playlist') == 'on'
-    main_artist = request.form.get('main_artist')  # Add this line
-
-    artist = Artist.query.filter_by(artist_name=artist_name).first()
-    if artist:
-        artist.need_to_explore = need_to_explore
-        artist.looked_at = looked_at
-        artist.artist_playlist = artist_playlist
-        artist.main_artist = main_artist  # Add this line
-        db.session.commit()
-        print(f"Updated artist: {artist_name}")
-    
+@app.route('/update_artist/<int:artist_id>', methods=['POST'])
+def update_artist(artist_id):
+    artist = Artist.query.get_or_404(artist_id)
+    artist.need_to_explore = request.form.get('need_to_explore') == 'on'
+    artist.looked_at = request.form.get('looked_at') == 'on'
+    artist.artist_playlist = request.form.get('artist_playlist') == 'on'
+    artist.main_artist = request.form.get('main_artist', artist.main_artist)
+    artist.one_of_each = request.form.get('one_of_each', artist.one_of_each)
+    artist.notes = request.form.get('notes', artist.notes)
+    db.session.commit()
     return '', 204
 
 @app.route('/tidal_overview', methods=['GET'])
@@ -144,12 +137,9 @@ def hide_artist():
 def save_field(artist_id, field):
     artist = Artist.query.get_or_404(artist_id)
     new_value = request.form['value']
-    print(f"Received new value for {field}: {new_value}") 
     setattr(artist, field, new_value)
-    print(artist, field, new_value)
     db.session.commit()
-    # return f"<span hx-get=\"{url_for('edit_field', artist_id=artist.id, field=field)}\" hx-trigger=\"click\" hx-swap=\"outerHTML\">{new_value}</span>"
-    return f"",204
+    return '', 204
 
 @app.route('/spotify_overview', methods=['GET'])
 def spotify_overview():
