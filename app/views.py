@@ -1,6 +1,5 @@
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from app import app, db
-import pandas as pd
 from app.models import Artist, PlaylistTracks, SpotifyTrack, TidalTrack, MusicBrainzAlbum, MusicBrainzTrack, Playlist
 import requests
 import random
@@ -37,6 +36,33 @@ def artists_overview():
     # Pass the artists and the pagination object to the template
     return render_template('artists_overview.html', artists=artists, pagination=artists_pagination)
 
+@app.route('/update_main_artist/<int:artist_id>', methods=['POST'])
+def update_main_artist(artist_id):
+    artist = Artist.query.get_or_404(artist_id)
+    new_main_artist = request.form.get('main_artist')
+    if new_main_artist:
+        artist.main_artist = new_main_artist
+        db.session.commit()
+    return redirect(url_for('artists_overview'))
+
+@app.route('/update_artist', methods=['POST'])
+def update_artist():
+    artist_name = request.form.get('artist_name')
+    need_to_explore = request.form.get('need_to_explore') == 'on'
+    looked_at = request.form.get('looked_at') == 'on'
+    artist_playlist = request.form.get('artist_playlist') == 'on'
+    main_artist = request.form.get('main_artist')  # Add this line
+
+    artist = Artist.query.filter_by(artist_name=artist_name).first()
+    if artist:
+        artist.need_to_explore = need_to_explore
+        artist.looked_at = looked_at
+        artist.artist_playlist = artist_playlist
+        artist.main_artist = main_artist  # Add this line
+        db.session.commit()
+        print(f"Updated artist: {artist_name}")
+    
+    return '', 204
 
 @app.route('/tidal_overview', methods=['GET'])
 def tidal_overview():
@@ -54,24 +80,6 @@ def tidal_overview():
         tracks = TidalTrack.query.paginate(page=page, per_page=10)
 
     return render_template('tidal_tracks.html', tracks=tracks.items, pagination=tracks, search=search)
-
-@app.route('/update_artist', methods=['POST'])
-def update_artist():
-    artist_name = request.form.get('artist_name')
-    print(artist_name)
-    need_to_explore = request.form.get('need_to_explore') == 'on'
-    looked_at = request.form.get('looked_at') == 'on'
-    artist_playlist = request.form.get('artist_playlist') == 'on'
-
-    artist = Artist.query.filter_by(artist_name=artist_name).first()
-    if artist:
-        artist.need_to_explore = need_to_explore
-        artist.looked_at = looked_at
-        artist.artist_playlist = artist_playlist
-        db.session.commit()
-        print(f"Updated artist: {artist_name}")
-    
-    return '', 204
 
 @app.route('/edit_field/<int:artist_id>/<string:field>', methods=['GET'])
 def edit_field(artist_id, field):
@@ -412,3 +420,18 @@ def create_playlist():
 def playlists_overview():
     playlists = Playlist.query.all()  # Fetch all playlists
     return render_template('playlists_overview.html', playlists=playlists)
+
+@app.route('/edit_artist/<int:artist_id>', methods=['GET', 'POST'])
+def edit_artist(artist_id):
+    artist = Artist.query.get_or_404(artist_id)
+    if request.method == 'POST':
+        artist.artist_name = request.form['artist_name']
+        artist.main_artist = request.form['main_artist']
+        artist.need_to_explore = 'need_to_explore' in request.form
+        artist.looked_at = 'looked_at' in request.form
+        artist.artist_playlist = 'artist_playlist' in request.form
+        artist.one_of_each = request.form['one_of_each']
+        artist.notes = request.form['notes']
+        db.session.commit()
+        return redirect(url_for('artists_overview'))
+    return render_template('edit_artist.html', artist=artist)

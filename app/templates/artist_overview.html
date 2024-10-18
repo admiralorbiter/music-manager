@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Artist Overview</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Artist Name</th>
+            <th>Main Artist</th>
+            <th>Need to Explore</th>
+            <th>Looked At</th>
+            <th>Artist Playlist</th>
+            <th>One of Each</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for artist in artists %}
+        <tr>
+            <td>{{ artist.artist_name }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('update_main_artist', artist_id=artist.id) }}">
+                    <input type="text" name="main_artist" value="{{ artist.main_artist }}" class="form-control">
+                    <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
+                </form>
+            </td>
+            <td>{{ 'Yes' if artist.need_to_explore else 'No' }}</td>
+            <td>{{ 'Yes' if artist.looked_at else 'No' }}</td>
+            <td>{{ 'Yes' if artist.artist_playlist else 'No' }}</td>
+            <td>{{ artist.one_of_each }}</td>
+            <td>{{ artist.notes }}</td>
+            <td>
+                <a href="{{ url_for('edit_artist', artist_id=artist.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

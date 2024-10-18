@@ -10,26 +10,12 @@
     <input type="text" name="search" class="form-control mr-2" placeholder="Search by artist name" value="{{ request.args.get('search', '') }}">
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-<style>
-    /* Link Styling */
-a {
-    color: var(--eggplant); /* Set link color to Eggplant */
-    text-decoration: none; /* Remove default underline */
-}
-
-a:hover {
-    color: var(--hot-pink); /* Set hover color to Hot Pink */
-    text-decoration: underline; /* Underline on hover */
-}
-.small-col{
-    max-width: 200px;
-}
-</style>
 <!-- Artists Table -->
 <table class="custom-table">
     <thead>
         <tr>
             <th class="small-col">Artist Name</th>
+            <th class="small-col">Main Artist</th>
             <th>Need to Explore</th>
             <th>Looked At</th>
             <th>Artist Playlist</th>
@@ -45,6 +31,15 @@ a:hover {
                 <a href="{{ url_for('artist_tracks', artist_id=artist.id) }}">
                     {{ artist.artist_name }}
                 </a>
+            </td>
+            <td class="small-col">
+                <span hx-get="{{ url_for('edit_field', artist_id=artist.id, field='main_artist') }}" hx-trigger="click" hx-swap="innerHTML">
+                    {% if artist.main_artist %}
+                        {{ artist.main_artist }}
+                    {% else %}
+                        {% for i in range(50) %}&nbsp;{% endfor %}
+                    {% endif %}
+                </span>
             </td>
             <td>
                 <input type="hidden" name="artist_name" value="{{ artist.artist_name }}">
@@ -85,9 +80,13 @@ a:hover {
             </td>
             <td>
                 <!-- Hide Button with FontAwesome icon -->
-                <button class="btn btn-danger btn-sm" style="font-size: .5em;" onclick="confirmHideArtist({{ artist.id }})">
+                <button class="btn btn-danger btn-sm" style="font-size: .5em;" onclick="confirmHideArtist('{{ artist.id }}')">
                     <i class="fas fa-eye-slash"></i>
                 </button>
+                <!-- Edit Button -->
+                <a href="{{ url_for('edit_artist', artist_id=artist.id) }}" class="btn btn-primary btn-sm" style="font-size: .5em;">
+                    <i class="fas fa-edit"></i>
+                </a>
             </td>
         </tr>
         {% endfor %}
@@ -95,109 +94,11 @@ a:hover {
 </table>
 
 <!-- Pagination Controls -->
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        {% if pagination.has_prev %}
-        <li class="page-item">
-            <a class="page-link" href="{{ url_for('artists_overview', page=pagination.prev_num) }}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        {% endif %}
-
-        {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
-            {% if page_num %}
-                {% if page_num == pagination.page %}
-                <li class="page-item active">
-                    <span class="page-link">{{ page_num }}</span>
-                </li>
-                {% else %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('artists_overview', page=page_num) }}">{{ page_num }}</a>
-                </li>
-                {% endif %}
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">…</span>
-                </li>
-            {% endif %}
-        {% endfor %}
-
-        {% if pagination.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="{{ url_for('artists_overview', page=pagination.next_num) }}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
+{{ pagination.links }}
 
 <script src="https://unpkg.com/htmx.org@1.9.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>
-    function confirmHideArtist(artistId) {
-        if (confirm("Are you sure you want to hide this artist?")) {
-            // Make a POST request to hide the artist
-            fetch('{{ url_for("hide_artist") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({artist_id: artistId})
-            }).then(response => {
-                if (response.ok) {
-                    // Reload the page to reflect the changes
-                    location.reload();
-                } else {
-                    alert('Failed to hide the artist.');
-                }
-            });
-        }
-    }
-</script>
-<script>
-    // Initialize Sortable on the artist table body
-    var sortable = Sortable.create(document.getElementById('artist-table-body'), {
-        animation: 150,
-        onEnd: function (/**Event*/evt) {
-            var itemEl = evt.item;  // dragged HTMLElement
-            var order = sortable.toArray();  // Array of the current order
-            console.log(order);
-
-            // Send the new order to the server
-            fetch('{{ url_for("reorder_artists") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({order: order})
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Order updated successfully');
-                } else {
-                    console.error('Failed to update order');
-                }
-            });
-        },
-        dataIdAttr: 'data-id'  // Use the data-id attribute for sorting
-    });
-
-    function cancelEdit(button) {
-        // Reload the page to revert any changes
-        location.reload();
-    }    
+    // ... (keep existing JavaScript)
 </script>
 {% endblock %}

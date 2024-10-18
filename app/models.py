@@ -1,8 +1,14 @@
 from app import db
 
+featured_artists = db.Table('featured_artists',
+    db.Column('artist_id', db.Integer, db.ForeignKey('artist.id'), primary_key=True),
+    db.Column('track_id', db.Integer, db.ForeignKey('music_brainz_track.id'), primary_key=True)
+)
+
 class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist_name = db.Column(db.String(120), nullable=False)
+    main_artist = db.Column(db.String(120), nullable=False)
     need_to_explore = db.Column(db.Boolean, nullable=False)
     looked_at = db.Column(db.Boolean, nullable=False)
     artist_playlist = db.Column(db.Boolean, nullable=False)
@@ -12,6 +18,15 @@ class Artist(db.Model):
     hide = db.Column(db.Boolean, nullable=False, default=False)
     musicbrainz_id = db.Column(db.String(36), nullable=True)
     musicbrainz_data = db.relationship('MusicBrainzAlbum', backref='artist', lazy=True)
+    tracks = db.relationship('MusicBrainzTrack', backref='main_artist', lazy='dynamic')
+    featured_in_tracks = db.relationship('MusicBrainzTrack', secondary=featured_artists, 
+                                         back_populates='featured_artists')
+    genres = db.Column(db.String(255), nullable=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Artist, self).__init__(*args, **kwargs)
+        if not self.main_artist:
+            self.main_artist = self.artist_name
 
     def __repr__(self):
         return f'<Artist {self.artist_name}>'
@@ -32,6 +47,9 @@ class MusicBrainzTrack(db.Model):
     track_order = db.Column(db.Integer, nullable=False)
     album_id = db.Column(db.Integer, db.ForeignKey('music_brainz_album.id'), nullable=False)
     playlists = db.relationship('PlaylistTracks', back_populates='track')
+    main_artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'), nullable=True)
+    featured_artists = db.relationship('Artist', secondary=featured_artists, 
+                                       back_populates='featured_in_tracks')
 
     def __repr__(self):
         return f'<MusicBrainzTrack {self.track_name} - Order {self.track_order}>'

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit Artist</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="artist_name">Artist Name</label>
+        <input type="text" class="form-control" id="artist_name" name="artist_name" value="{{ artist.artist_name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="main_artist">Main Artist</label>
+        <input type="text" class="form-control" id="main_artist" name="main_artist" value="{{ artist.main_artist }}" required>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="need_to_explore" name="need_to_explore" {% if artist.need_to_explore %}checked{% endif %}>
+        <label class="form-check-label" for="need_to_explore">Need to Explore</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="looked_at" name="looked_at" {% if artist.looked_at %}checked{% endif %}>
+        <label class="form-check-label" for="looked_at">Looked At</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="artist_playlist" name="artist_playlist" {% if artist.artist_playlist %}checked{% endif %}>
+        <label class="form-check-label" for="artist_playlist">Artist Playlist</label>
+    </div>
+    <div class="form-group">
+        <label for="one_of_each">One of Each</label>
+        <input type="text" class="form-control" id="one_of_each" name="one_of_each" value="{{ artist.one_of_each }}">
+    </div>
+    <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea class="form-control" id="notes" name="notes">{{ artist.notes }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+{% endblock %}
