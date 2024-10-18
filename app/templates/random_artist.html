@@ -1,10 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Artists{% endblock %}
+{% block title %}Artist Roulette{% endblock %}
+
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/artists_overview.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/random_artist.css') }}">
 {% include 'nav.html' %}
-    <h1>Artist Roll</h1>
-    <button hx-get="/roll" hx-target="#result" hx-trigger="click">Roll</button>
-    <div id="result"></div>
+<div class="roulette-container">
+    <h1>Artist Roulette</h1>
+    <div class="roulette-wheel">
+        <div class="wheel-center"></div>
+        <div class="wheel-spinner"></div>
+    </div>
+    <button id="roll-button" hx-get="/roll" hx-target="#result" hx-trigger="click">Spin the Wheel</button>
+    <div id="result" class="result-display"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const wheel = document.querySelector('.roulette-wheel');
+    const rollButton = document.getElementById('roll-button');
+    const resultDisplay = document.querySelector('.result-display');
+
+    rollButton.addEventListener('click', function() {
+        wheel.classList.add('spinning');
+        
+        // Remove the 'spinning' class after the animation completes
+        setTimeout(() => {
+            wheel.classList.remove('spinning');
+        }, 5000);
+
+        // The HTMX request will handle updating the result
+    });
+});
+</script>
 {% endblock %}

@@ -349,8 +349,16 @@ def sync_data(artist_id):
 @app.route('/roll', methods=['GET'])
 def roll():
     print("Rolling...")
-    artists = Artist.query.filter_by(hide=False).all()
-    selected_artist = random.choice(artists)
+    # Query for artists that are either not looked at, or need to explore
+    eligible_artists = Artist.query.filter(
+        (Artist.hide == False) & 
+        ((Artist.looked_at == False) | (Artist.need_to_explore == True))
+    ).all()
+    
+    if not eligible_artists:
+        return "No eligible artists found."
+    
+    selected_artist = random.choice(eligible_artists)
     return f'<a href="/artist/{selected_artist.id}/tracks">{selected_artist.artist_name}</a>'
 
 @app.route('/random_artist')

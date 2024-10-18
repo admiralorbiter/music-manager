@@ -1,0 +1,112 @@
+body {
+    background-color: var(--amaranth-pink);
+    font-family: 'Sarala', sans-serif;
+}
+
+.roulette-container {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Kalam', cursive;
+    color: var(--eggplant);
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+.roulette-wheel {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--pale-dogwood) 0deg 60deg, 
+        var(--eggplant) 60deg 120deg, 
+        var(--hot-pink) 120deg 180deg, 
+        var(--amaranth-pink) 180deg 240deg, 
+        var(--champagne) 240deg 300deg, 
+        var(--pale-dogwood) 300deg 360deg
+    );
+    position: relative;
+    margin: 0 auto 30px;
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.roulette-wheel.spinning {
+    animation: spin 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.wheel-center {
+    width: 50px;
+    height: 50px;
+    background-color: var(--champagne);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.wheel-spinner {
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid var(--eggplant);
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#roll-button {
+    background-color: var(--pale-dogwood);
+    border: none;
+    color: var(--eggplant);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+    font-family: 'Sarala', sans-serif;
+    font-weight: bold;
+}
+
+#roll-button:hover {
+    background-color: var(--hot-pink);
+    color: var(--champagne);
+}
+
+.result-display {
+    margin-top: 20px;
+    font-size: 1.2em;
+    min-height: 50px;
+    color: var(--eggplant);
+    background-color: var(--champagne);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.result-display a {
+    color: var(--eggplant);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.result-display a:hover {
+    color: var(--hot-pink);
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
