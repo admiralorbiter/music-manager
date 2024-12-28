@@ -2,7 +2,4 @@ env
 __pycache__/
 myenv/
 instance/
-*.db
-*.sqlite
-*.sqlite3
 ```
